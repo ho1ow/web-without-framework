@@ -1,5 +1,5 @@
 function fetchTasks() {
-  fetch("http://localhost:9999/get_tasks")
+  fetch("/get_tasks")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -44,21 +44,21 @@ function addTask() {
   formData.append("description", newTaskDescription);
 
   fetch("/add", {
-    method: "POST", 
+    method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded", 
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: formData, 
+    body: formData,
   })
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json(); 
+      return response.json();
     })
     .then((data) => {
       console.log("Task added:", data);
-      fetchTasks(); // 
+      fetchTasks(); //
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -79,15 +79,34 @@ function deleteTask(taskId) {
     })
     .then((data) => {
       console.log("Task deleted:", data);
-      fetchTasks(); 
+      fetchTasks();
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
+const fetchLogout = () => {
+  fetch("/logout", {
+    method: "POST",
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Logout successful:", data);
+    window.location.href = "/login";
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+};
+
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelector(".new-task button").onclick = addTask;
-
+  document.querySelector(".logout button").onclick = fetchLogout;
   fetchTasks();
 });

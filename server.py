@@ -36,10 +36,18 @@ class Server(SimpleHTTPRequestHandler):
                 self.send_json([{'id': task[0], 'description': task[1]}
                                for task in tasks])
             elif self.path == '/tasks':
-                self.path = '/static/task.html'
-                return SimpleHTTPRequestHandler.do_GET(self)
+                if not verify_user(self):
+                    # self.path = '/static/index.html'
+                    # return SimpleHTTPRequestHandler.do_GET(self)
+                    self.send_response(302)
+                    self.send_header('Location', '/login')
+                    self.end_headers()
+                    return
+                else:
+                    self.path = '/static/task.html'
+                    return SimpleHTTPRequestHandler.do_GET(self)
             else:
-                SimpleHTTPRequestHandler.do_GET(self)
+                return SimpleHTTPRequestHandler.do_GET(self)
         except Exception as e:
             logging.error(f"Error during GET request: {str(e)}")
             self.send_json({"error": "Server error"}, 500)
@@ -52,6 +60,14 @@ class Server(SimpleHTTPRequestHandler):
         try:
             if self.path == '/login' or self.path == '/register':
                 self.handle_auth(data_dict, self.path)
+            elif self.path == '/logout':
+                self.send_response(200)
+                self.send_header(
+                    'Set-Cookie', 'token=; HttpOnly; SameSite=Lax;')
+                self.end_headers()
+                self.wfile.write(json.dumps(
+                    {"message": "Logout successful"}).encode('utf-8'))
+
             elif self.path == '/add':
                 self.handle_add_task(data_dict)
         except Exception as e:

@@ -20,8 +20,27 @@
         padding: 20px;
       }
 
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
       .header h1 {
         color: #333;
+      }
+
+      .logout button {
+        padding: 10px;
+        background-color: #d43f3a;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .logout button:hover {
+        background-color: #c3312a;
       }
 
       .new-task input[type="text"] {
@@ -81,6 +100,9 @@
     <div class="task-manager">
       <div class="header">
         <h1>Task List</h1>
+        <div class="logout">
+          <button id="logout-btn">Log out</button>
+        </div>
       </div>
       <div class="new-task">
         <input type="text" id="new-task-input" placeholder="New Task" />
